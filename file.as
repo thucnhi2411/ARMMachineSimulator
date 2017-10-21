@@ -46,4 +46,9 @@ calByte:
 	LDP fp, [sp], 16			;
 	RET 						;
 .pos 0x100
+.double 0x7		;
+.single 0x7		;
+.half 0x7		;
+.byte 0x7		;
+.pos 0x140
 Stack: 

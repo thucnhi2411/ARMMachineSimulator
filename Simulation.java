@@ -17,13 +17,16 @@ public class Simulation extends JFrame implements ActionListener
     private String filename;
     private Button  load_button, run_button, stop_button, 
     step_button, reset_button, exit_button; 
-    private JTextField statusVal, instrVal, nVal, zVal, cVal, vVal;
+    private JTextField statusVal, instrVal, irVal, nVal, zVal, cVal, vVal;
     private JTextField regValArr[];
     private JFrame memoryWindow;
     private JTable    memoryTable;
     private String[][] memoryTableData;
-    boolean loaded = false;
-    
+    boolean fetched = false;
+    boolean decoded = false;
+    boolean executed = false;
+    boolean updated = false;
+
     public static void main(String[] args){
         Simulation sim = new Simulation();
     }
@@ -56,24 +59,26 @@ public class Simulation extends JFrame implements ActionListener
 
         JPanel p0 = new JPanel();
         p0.setLayout(new GridLayout(2,2, 6, 6));
-        //statusVal = new JTextField(machine.flag.getStatus(),SwingConstants.CENTER);
-        statusVal = new JTextField(null);
+        p0.add(new JLabel("Status ", SwingConstants.CENTER));
+        statusVal = new JTextField(machine.flag.getStatus(),SwingConstants.CENTER);
         statusVal.setEditable(false);
         p0.add(statusVal);
-        
+
+        JPanel p5 = new JPanel();
+        p5.setLayout(new GridLayout(2,2, 6, 6));
+        p5.add(new JLabel("Instruction: ", SwingConstants.CENTER));
         Register pc = machine.getRegList().get(9);
-        //instrVal = new JTextField(machine.getInstruction(pc.data).name,SwingConstants.CENTER);
-        instrVal = new JTextField(null);
+        instrVal = new JTextField(machine.getInstruction(pc.data).name,SwingConstants.CENTER);
         instrVal.setEditable(false);
-        p0.add(instrVal);
+        p5.add(instrVal);
+
+        p5.add(new JLabel("Instruction Register: ", SwingConstants.CENTER));
+        irVal = new JTextField(pc.value, SwingConstants.CENTER);
+        irVal.setEditable(false);
+        p5.add(irVal);
 
         JPanel p1 = new JPanel();
-        p1.setLayout(new GridLayout(2,2, 6, 6));
-
-        load_button = new Button("Load");          // construct the Button component
-        p1.add(load_button);                       // "super" Frame adds Button
-        load_button.addActionListener(this);
-
+        p1.setLayout(new FlowLayout());
         step_button = new Button("Step");          // construct the Button component
         p1.add(step_button);                       // "super" Frame adds Button
         step_button.addActionListener(this);
@@ -98,26 +103,22 @@ public class Simulation extends JFrame implements ActionListener
         p2.setLayout(new GridLayout(2,2, 6, 6));
 
         p2.add(new JLabel("N: ", SwingConstants.CENTER));
-        //nVal = new JTextField(machine.flag.getN()?"1":"0", SwingConstants.LEFT);
-        nVal = new JTextField("0", SwingConstants.LEFT);
+        nVal = new JTextField(machine.flag.getN()?"1":"0", SwingConstants.LEFT);
         nVal.setEditable(false);
         p2.add(nVal);
 
         p2.add(new JLabel("Z: ", SwingConstants.CENTER));
-        //zVal = new JTextField(machine.flag.getZ()?"1":"0", SwingConstants.LEFT);
-        zVal = new JTextField("0", SwingConstants.LEFT);
+        zVal = new JTextField(machine.flag.getZ()?"1":"0", SwingConstants.LEFT);
         zVal.setEditable(false);
         p2.add(zVal);
 
         p2.add(new JLabel("C: ", SwingConstants.CENTER));
-        //cVal = new JTextField(machine.flag.getC()?"1":"0", SwingConstants.LEFT);
-        cVal = new JTextField("0", SwingConstants.LEFT);
+        cVal = new JTextField(machine.flag.getC()?"1":"0", SwingConstants.LEFT);
         cVal.setEditable(false);
         p2.add(cVal);
 
         p2.add(new JLabel("V: ", SwingConstants.CENTER));
-        //vVal = new JTextField(machine.flag.getV()?"1":"0", SwingConstants.LEFT);
-        vVal = new JTextField("0", SwingConstants.LEFT);
+        vVal = new JTextField(machine.flag.getV()?"1":"0", SwingConstants.LEFT);
         vVal.setEditable(false);
         p2.add(vVal);
 
@@ -134,8 +135,7 @@ public class Simulation extends JFrame implements ActionListener
             } else if (i==9) {
                 p4.add(new JLabel("pc : ", SwingConstants.CENTER));
             }
-            //regValArr[i] = new JTextField(machine.getRegList().get(i).value, SwingConstants.LEFT);
-            regValArr[i] = new JTextField(null, SwingConstants.LEFT);
+            regValArr[i] = new JTextField(machine.getRegList().get(i).value, SwingConstants.LEFT);
             regValArr[i].setEditable(false);
             p4.add(regValArr[i]);
         }
@@ -152,13 +152,14 @@ public class Simulation extends JFrame implements ActionListener
         add(Box.createRigidArea(new Dimension(20,20)));
         add(p1);
 
-        JLabel status_label = new JLabel("Status");
-        status_label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(Box.createRigidArea(new Dimension(20,20)));
-        add(status_label);
-        add(Box.createRigidArea(new Dimension(20,20)));
         add(p0);
 
+        JLabel i_label = new JLabel("Instruction");
+        i_label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(Box.createRigidArea(new Dimension(20,20)));
+        add(i_label);
+        add(Box.createRigidArea(new Dimension(20,20)));
+        add(p5);
         // Add Flags Pane
         JLabel flag_label = new JLabel("Flags");
         flag_label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -180,40 +181,26 @@ public class Simulation extends JFrame implements ActionListener
     }
 
     public void updateMachine(){
-        if (loaded == true){
-            // updateflags
-            nVal.setText(machine.flag.getN()?"1":"0");
-            zVal.setText(machine.flag.getZ()?"1":"0");
-            cVal.setText(machine.flag.getC()?"1":"0");
-            vVal.setText(machine.flag.getV()?"1":"0");
-            statusVal.setText(machine.flag.getStatus());
-            Register pc = machine.getRegList().get(9);
-            instrVal.setText(machine.getInstruction(pc.data).name);
-            for (int i = 0; i<machine.regNum; i++){
-                if (i<7){
-                    regValArr[i].setText(machine.getRegList().get(i).hexVal);
-                } else {
-                    regValArr[i].setText(machine.getRegList().get(i).value);
-                }
+        Register pc = machine.getRegList().get(9);
+        nVal.setText(machine.flag.getN()?"1":"0");
+        zVal.setText(machine.flag.getZ()?"1":"0");
+        cVal.setText(machine.flag.getC()?"1":"0");
+        vVal.setText(machine.flag.getV()?"1":"0");
+        statusVal.setText(machine.flag.getStatus());
+        instrVal.setText(machine.getInstruction(pc.data).name);
+        for (int i = 0; i<machine.regNum-1; i++){
+            if (i<7){
+                regValArr[i].setText(machine.getRegList().get(i).hexVal);
+            } else {
+                regValArr[i].setText(machine.getRegList().get(i).value);
+            }
 
-            }
-        } else {
-            // updateflags
-            nVal.setText(null);
-            zVal.setText(null);
-            cVal.setText(null);
-            vVal.setText(null);
-            statusVal.setText(null);
-            Register pc = machine.getRegList().get(9);
-            instrVal.setText(null);
-            for (int i = 0; i<machine.regNum; i++){
-                regValArr[i].setText(null);
-            }
         }
-
+        String s = "0x"+Integer.toHexString(pc.data + 8);
+        regValArr[9].setText(s);
+        irVal.setText(pc.value);
         drawMemory();
     }
-
     // ActionEvent handler - Called back upon button-click.
     @Override
     public void actionPerformed(ActionEvent evt) {
@@ -223,9 +210,8 @@ public class Simulation extends JFrame implements ActionListener
             machine.run();
         } else if(evt.getActionCommand().equals("Load")) {
             machine = new Machine(filename);
-            loaded = true;
+            fetched = true;
         } else if(evt.getActionCommand().equals("Reset")) {
-            loaded = false;
             // Reset removes the old machine and makes a new one
             machine = new Machine(filename);
             if (isRunning) {
@@ -263,10 +249,12 @@ public class Simulation extends JFrame implements ActionListener
         }
 
         // Update values of all registers and memory addresses in the GUI
-        updateMachine();
+        for (int i = 0; i<4; i++){
+            updateMachine();
+        }
+
     }
-    
-    
+
     public void memoryWindow() {
         memoryWindow = new JFrame("Main Memory");
         memoryWindow.setTitle("Main Memory");  // "super" Frame sets its title
@@ -274,25 +262,21 @@ public class Simulation extends JFrame implements ActionListener
         memoryWindow.setResizable(false);
         drawMemory();
     }
-    
+
     public void drawMemory() {
         memoryWindow.getContentPane().removeAll();
         String[] columnNames = {"Address",
                 "Data"};
-          
-        if (loaded == true){
-            memoryTableData = machine.mem.getContentHex();
-        } else {
-            memoryTableData = machine.mem.initialMem();
-        }
+
+        memoryTableData = machine.mem.getContentHex();
 
         memoryTable = new JTable(memoryTableData, columnNames);
-        
+
         memoryTable.setPreferredScrollableViewportSize(new Dimension(200, 600));
         memoryTable.setFillsViewportHeight(true);
         int curInstructionAddress = machine.pc.data/machine.wordsize;
         memoryTable.setRowSelectionInterval(curInstructionAddress, curInstructionAddress);
-        
+
         JScrollPane js=new JScrollPane(memoryTable);
         js.setVisible(true);
         memoryWindow.add(js);

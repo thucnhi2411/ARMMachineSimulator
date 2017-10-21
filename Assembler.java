@@ -134,7 +134,19 @@ public class Assembler
                     int x = Integer.parseInt(posS,16);
                     sp.setData(x);
                     fp.setData(x);
-                }else {
+                } else if (arr[0].equals("double")){
+                    memArr[pos+15] = (byte) Integer.parseInt(arr[1].substring(2,3));
+                    pos = pos + 16;
+                } else if (arr[0].equals("single")){
+                    memArr[pos+7] = (byte) Integer.parseInt(arr[1].substring(2,3));
+                    pos = pos + 8;
+                } else if (arr[0].equals("half")){
+                    memArr[pos+3] = (byte) Integer.parseInt(arr[1].substring(2,3));
+                    pos = pos + 3;
+                }  else if (arr[0].equals("byte")){
+                    memArr[pos+2] = (byte) Integer.parseInt(arr[1].substring(2,3));
+                    pos = pos + 2;
+                } else {
                     if (arr[0].startsWith("calculate") || arr[0].startsWith("main") 
                     || arr[0].startsWith("calByte")){
                         while (sc.hasNext()){
