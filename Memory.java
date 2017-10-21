@@ -101,5 +101,8 @@ public class Memory
         }
         return result;
     }
-
+    
+    public int getMemSize(){
+        return memSize;
+    }
 }

@@ -32,7 +32,7 @@ public class Instruction
 
     public void decodeOpcode(Byte b){
         // for HALT, NOP, RET, STP, LDP
-        if (b < 3){
+        if (b < 4 && b>0){
             byteArr[1] = b;
             for (int i = 0; i<byteArr.length; i++){
                 if (i!=1){
@@ -52,7 +52,7 @@ public class Instruction
         for (int e = 0; e < arr.length; e++) {
             arr[e] = arr[e].replaceAll("[^\\w]", "");
         }
-        if (b<3){
+        if (b<4 && b>0){
             p1 = arr[1];
         } else if (b>=19 && b<22){
             decodeStackOp(arr);
@@ -63,8 +63,8 @@ public class Instruction
             // for type R, D, I -> arr[2]: x0, arr[3]: x29, arr[4]: #28
             decodeRDI(arr);
         } else if (b==80){
-            // for CBNZ  
-            decodeCBNZ(arr);
+            // for CBZ  
+            decodeCBZ(arr);
         } else if (b==81){
             // for BL one 
             decodeBL(arr);
@@ -106,7 +106,7 @@ public class Instruction
         p4 = arr[4];
     }
 
-    private void decodeCBNZ(String[] arr){
+    private void decodeCBZ(String[] arr){
         p1 = arr[1];
         mapping(arr[2],2,3);
         p2 = arr[2];

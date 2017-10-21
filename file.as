@@ -27,23 +27,23 @@ calculate:
 	LDURSW x3, [fp, 24]			;
 	AND x4, x2, x3				; //0001
 	STURW x4, [fp, 20]			;
-	LDURSW x4, [fp, 20]		;
-	LDURSW x2, [fp, 28]		;
+	LDURSW x4, [fp, 20]			;
+	LDURSW x2, [fp, 28]			;
 	SUB x5, x4, x2				; //0000
-	STURW x5, [fp, 16]		;
-	LDURSW x5, [fp, 16]		;
-	CBNZ x5, calByte			;
+	STURW x5, [fp, 16]			;
+	LDURSW x5, [fp, 16]			;
+	CBZ x5, calByte			;
 	NOP							;
-	LDP fp, [sp], 32		;
+	LDP fp, [sp], 32			;
 	RET 						;
 calByte: 
-	STP fp, [sp, -16]! 				;
+	STP fp, [sp, -16]! 			;
 	MOV x6, 65					; // save byte val to x3
 	STURB x6, [fp, 15]			;
 	LDURB x6, [fp, 15]			;
 	ADDI x6, x6, 1				;
 	STURB x6, [fp, 15]			;
-	LDP fp, [sp], 16				;
+	LDP fp, [sp], 16			;
 	RET 						;
 .pos 0x100
 Stack: 

@@ -15,8 +15,9 @@ public class Machine
         ArrayList<Instruction> instrList = a.getInstrList();
         ArrayList<Register> regList = a.getRegList();
         HashMap<Instruction, Integer> addressMap = a.getAddrMap();
+        HashMap<Integer, Instruction> reverseAddrMap = a.getReverseAddrMap();
         Memory mem = a.getMemory();
-        Operation operation = new Operation(mem, instrList,regList,addressMap);
+        Operation operation = new Operation(mem, instrList,regList,addressMap,reverseAddrMap);
         a.printImage();
         for (int i = 0; i<regList.size(); i++){
             System.out.println(regList.get(i).id+" "+regList.get(i).value);

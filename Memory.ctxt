@@ -18,4 +18,6 @@ comment5.text=\n\ Method\ byteToHex,\ converts\ a\ byte\ array\ (usually\ word\ 
 comment6.params=
 comment6.target=java.lang.String[][]\ getContentHex()
 comment6.text=\n\ Method\ getContentHex\ returns\ the\ addresses\ and\ contents\ of\ the\ memory\n\ as\ an\ array\ of\ hex\ formatted\ string\ (for\ display\ in\ the\ GUI\n\n\ @return\ hex\ representation\ of\ the\ memory\ content\n
-numComments=7
+comment7.params=
+comment7.target=int\ getMemSize()
+numComments=8

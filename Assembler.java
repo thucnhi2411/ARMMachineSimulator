@@ -12,6 +12,7 @@ public class Assembler
 {
     HashMap<String, Byte> opCodeMap;
     HashMap<Instruction, Integer> addressMap = new HashMap<Instruction, Integer>();
+    HashMap<Integer, Instruction> reverseAddrMap = new HashMap<Integer, Instruction> ();
     ArrayList<Instruction> instrList = new ArrayList<Instruction>();
     ArrayList<Register> regList = new ArrayList<Register>();
     int wordsize = 8;
@@ -40,9 +41,9 @@ public class Assembler
     public void initOpCodeMap() {
         // Fill Operation Code Table
         opCodeMap = new HashMap<String, Byte>();
-        opCodeMap.put("HALT", (byte)0x00);
-        opCodeMap.put("NOP", (byte)0x01);
-        opCodeMap.put("RET", (byte)0x02);
+        opCodeMap.put("HALT", (byte)0x01);
+        opCodeMap.put("NOP", (byte)0x02);
+        opCodeMap.put("RET", (byte)0x03);
         opCodeMap.put("STP", (byte)0x13);        
         opCodeMap.put("LDP", (byte)0x14);  
         opCodeMap.put("MOV", (byte)0x10);
@@ -59,7 +60,7 @@ public class Assembler
         opCodeMap.put("SUB", (byte)0x31);        
         opCodeMap.put("AND", (byte)0x32);        
         opCodeMap.put("ADDI", (byte)0x40);   
-        opCodeMap.put("CBNZ", (byte)0x50);    
+        opCodeMap.put("CBZ", (byte)0x50);    
         opCodeMap.put("BL", (byte)0x51);               
     }
 
@@ -112,6 +113,7 @@ public class Assembler
                     Instruction i = new Instruction(opCodeMap.get(arr[1]));
                     i.decodeRegister(arr);
                     addressMap.put(i,pos);
+                    reverseAddrMap.put(pos,i);
                     instrList.add(i);
                     pos+=8;
                 } else if (arr[0].equals("Stack")){
@@ -143,6 +145,7 @@ public class Assembler
                             i.setFunction(arr[0]);
                             i.decodeRegister(arr1);
                             addressMap.put(i,pos);
+                            reverseAddrMap.put(pos,i);
                             instrList.add(i);
 
                             pos+=8;
@@ -202,6 +205,10 @@ public class Assembler
 
     public HashMap<Instruction, Integer> getAddrMap(){
         return addressMap;
+    }
+    
+    public HashMap<Integer, Instruction> getReverseAddrMap(){
+        return reverseAddrMap;
     }
 
     /**

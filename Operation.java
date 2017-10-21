@@ -12,34 +12,40 @@ public class Operation
     ArrayList<Instruction> instrList;
     ArrayList<Register> regList;
     HashMap<Instruction, Integer> addressMap;
+    HashMap<Integer, Instruction> reverseAddrMap;
     Flag[] flagArr = new Flag[4];
     Memory mem;
     int prev = 0;
+    int[] lastPos = new int[2];
+    int returnTime = 0;
     /**
      * Constructor for objects of class Operation
      */
-    public Operation(Memory m, ArrayList<Instruction> list1, ArrayList<Register>list2,HashMap<Instruction, Integer>map1)
+    public Operation(Memory m, ArrayList<Instruction> list1, ArrayList<Register>list2,
+    HashMap<Instruction, Integer>map1, HashMap<Integer, Instruction> map2)
     {
-        initOp(list1,list2,map1);
+        initOp(list1,list2,map1,map2);
         mem = m;
         initFlag();
         process();
     }
 
-    public void initOp(ArrayList<Instruction> list1, ArrayList<Register>list2,HashMap<Instruction, Integer>map1){
+    public void initOp(ArrayList<Instruction> list1, ArrayList<Register>list2,
+    HashMap<Instruction, Integer>map1, HashMap<Integer, Instruction> map2){
         instrList = list1;
         regList = list2;
         addressMap = map1;
+        reverseAddrMap = map2;
     }
 
     public void process(){
         Register pc = regList.get(9);
+        pc.setData(0);
         outerloop:
-        for (int k = 0; k<instrList.size(); k++){
-            Instruction i = instrList.get(k);
+        for (int k = 0; k < mem.getMemSize(); k+=8){
+            Instruction i = reverseAddrMap.get(k);
             System.out.println(i.p1);
             Integer x = addressMap.get(i);
-
             switch (i.p1){
                 case "MOV":
                     processMOV(i);
@@ -51,53 +57,58 @@ public class Operation
                     processD(i);
                     break;
                 case "STURH":
-                processD(i);
-                break;
+                    processD(i);
+                    break;
                 case "STURW":
-                processD(i);
-                break;     
+                    processD(i);
+                    break;     
                 case "STURB":
-                processD(i);
-                break;                    
+                    processD(i);
+                    break;                    
                 case "LDUR":
-                processD(i);
-                break;
+                    processD(i);
+                    break;
                 case "LDURH":
-                processD(i);
-                break;
+                    processD(i);
+                    break;
                 case "LDURSW":
-                processD(i);
-                break;
+                    processD(i);
+                    break;
                 case "LDURB":
-                processD(i);
-                break;
+                    processD(i);
+                    break;
                 case "BL":
-                processBL(i);
-                break;
+                    k = processBL(i, pc);
+                    break;
                 case "LDP":
-                processLDP(i);
-                break;
+                    processLDP(i);
+                    break;
                 case "HALT":
-                break outerloop;
+                    break outerloop;
                 case "ADD":
-                processADD(i);
-                break;
+                    processADD(i);
+                    break;
                 case "ADDI":
-                processADD(i);
-                break;
+                    processADD(i);
+                    break;
                 case "SUB":
-                processSUB(i);
-                break;
+                    processSUB(i);
+                    break;
                 case "AND":
-                processAND(i);
-                break;
-                case "CBNZ":
-                processCBNZ(i);
-                break;
+                    processAND(i);
+                    break;
+                case "CBZ":
+                    int x1 = Integer.parseInt(i.p2.substring(1,i.p2.length()));
+                    Register r = regList.get(x1);
+                    int number1 = Integer.parseInt(r.value, 2);
+                    System.out.println(number1);
+                    if (number1 == 0) k = processCBZ(i, pc);
+                    break;
                 case "RET":
-                processRET(i);
-                break;
+                    k = processRET(i, pc);
+                    break;
             }
+
         }
     }
 
@@ -135,16 +146,6 @@ public class Operation
         String s = "0x"+Integer.toString(a);
         fp.setData(a);   
         prev= Integer.parseInt(i.p4);
-    }
-
-    //BL
-    public void processBL(Instruction i){
-        for (int k = 0; k<instrList.size(); k++){
-            Instruction i2 = instrList.get(k);
-            if (i.p4.equals(i2.func)){
-
-            }
-        }
     }
 
     //LDP
@@ -203,12 +204,42 @@ public class Operation
         r3.setVal(Integer.toString(result));
     }
 
+    //BL
+    public int processBL(Instruction i, Register pc){
+        for (int k = 0; k<instrList.size(); k++){
+            Instruction i2 = instrList.get(k);
+            if (i.p4.equals(i2.func)){
+                pc.setData(addressMap.get(i2)-8);
+                lastPos[0] = addressMap.get(i);
+                returnTime++;
+                break;
+            }
+        }
+        return pc.data;
+    }
+    
     //CBNZ
-    public void processCBNZ(Instruction i){
+    public int processCBZ(Instruction i, Register pc){
+        for (int k = 0; k<instrList.size(); k++){
+            Instruction i2 = instrList.get(k);
+            if (i.p4.equals(i2.func)){
+                pc.setData(addressMap.get(i2)-8);
+                lastPos[1] = addressMap.get(i);
+                returnTime++;
+                break;
+            }
+        }
+        return pc.data;
     }
 
     //RET
-    public void processRET(Instruction i){
+    public int processRET(Instruction i, Register pc){
+        if (i.func.equals("calByte")){
+            pc.setData(lastPos[1]);
+        } else {
+            pc.setData(lastPos[0]);
+        }
+        return pc.data;
     }
 
     public void initFlag(){
