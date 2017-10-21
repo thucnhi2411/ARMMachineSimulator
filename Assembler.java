@@ -75,6 +75,7 @@ public class Assembler
         regList.add(r2);
         regList.add(r3);
         regList.add(r4);
+        r4.setData(0);
     }
 
     /**
@@ -111,6 +112,7 @@ public class Assembler
                     pos = hexToDec(arr[1])*2;
                 } else if (s.contains("Stack,")){
                     Instruction i = new Instruction(opCodeMap.get(arr[1]));
+                    i.setName(s);
                     i.decodeRegister(arr);
                     addressMap.put(i,pos);
                     reverseAddrMap.put(pos,i);
@@ -142,6 +144,7 @@ public class Assembler
                                 arr[e] = arr[e].replaceAll("[^\\w]", "");
                             }
                             Instruction i = new Instruction(opCodeMap.get(arr1[1]));
+                            i.setName(ss);
                             i.setFunction(arr[0]);
                             i.decodeRegister(arr1);
                             addressMap.put(i,pos);

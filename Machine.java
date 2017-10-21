@@ -7,21 +7,49 @@ import java.util.*;
  */
 public class Machine
 {
-
-    public static void main(String[] args){
-        Assembler a = new Assembler("file.as");
+    Flag flag = new Flag();
+    Memory mem;
+    Operation operation;
+    Assembler a;
+    int regNum;
+    int wordsize;
+    Register pc;
+    ArrayList<Register> regList;
+    HashMap<Integer, Instruction> reverseAddrMap;
+    public Machine(String file){
+        System.out.println("Creating new machine ...");
+        a = new Assembler(file);
         int memsize = a.getMemsize();
-        int wordsize = a.getWordsize();
+        wordsize = a.getWordsize();
         ArrayList<Instruction> instrList = a.getInstrList();
-        ArrayList<Register> regList = a.getRegList();
+        regList = a.getRegList();
+        regNum = regList.size();
+        pc = regList.get(9);
         HashMap<Instruction, Integer> addressMap = a.getAddrMap();
-        HashMap<Integer, Instruction> reverseAddrMap = a.getReverseAddrMap();
-        Memory mem = a.getMemory();
-        Operation operation = new Operation(mem, instrList,regList,addressMap,reverseAddrMap);
+        reverseAddrMap = a.getReverseAddrMap();
+        mem = a.getMemory();
+        operation = new Operation(mem, instrList,regList,addressMap,reverseAddrMap);
         a.printImage();
-        for (int i = 0; i<regList.size(); i++){
-            System.out.println(regList.get(i).id+" "+regList.get(i).value);
-        }
+        System.out.println("Finished initializing machine");
     }
 
+    public void run(){
+        if (flag.getStatus() == "AOK"){
+            operation.process(flag);
+        }
+    }
+    
+    public void execute(){
+        while (flag.getStatus() == "AOK"){
+            operation.process(flag);
+        }
+    }
+    
+    public ArrayList<Register>  getRegList(){
+        return regList;
+    }
+    
+    public Instruction getInstruction(int k){
+        return reverseAddrMap.get(k);
+    }
 }

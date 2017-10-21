@@ -10,6 +10,7 @@ public class Memory
     // array of bytes that holds the memory data
     private byte[] mem;
     private int wordSize, memSize;
+    private String[][] memtable;
 
     /**
      * Constructor, makes a new Main memory of size memSize that reads and writes
@@ -38,9 +39,13 @@ public class Memory
      */
     public byte getByte(int addr)
     {
-        byte result = mem[addr];
-        //byte[] result = new byte[wordSize];
-        //System.arraycopy(mem, addr, result, 0, wordSize);   
+        byte result = mem[addr]; 
+        return result;
+    }
+    
+    private byte[] getByteA(int addr){
+        byte[] result = new byte[wordSize];
+        System.arraycopy(mem, addr, result, 0, wordSize);   
         return result;
     }
 
@@ -67,7 +72,7 @@ public class Memory
     protected String byteToHex(byte[] data) {
         StringBuilder sb = new StringBuilder();
         for (byte b : data) {
-            sb.append(String.format("%0X ", b));
+            sb.append(b);
         }
         return sb.toString().trim();
     }
@@ -80,24 +85,18 @@ public class Memory
      */
     public String[][] getContentHex() {
         String[][] result = new String[this.memSize/this.wordSize][2];
-        for (int i = 0; i<this.memSize; i+=this.wordSize) {
-            byte[] word = new byte[this.wordSize];
-            
-            for (int j=i; j<i+this.wordSize; j++) {
-                // if memory is size is not divisible by word size
-                if (j>=this.memSize) {
-                    word = null;
-                    break;
-                }
-                // else construct the word
-                word[j-i] = mem[j];
-            }
-
-            if (word != null)
-                result[i/this.wordSize] = new String[]{
-                    byteToHex(new byte[]{(byte) i}),
-                    byteToHex(word)
-                };
+        for (int i = 0; i<this.memSize/this.wordSize; i+=this.wordSize) {
+            result[i/this.wordSize][0] = "0x"+Integer.toHexString(i);
+            result[i/this.wordSize][1] = byteToHex(getByteA(i));
+        }
+        return result;
+    }
+    
+    public String[][] initialMem(){
+        String[][] result = new String[this.memSize/this.wordSize][2];
+        for (int i = 0; i<this.memSize/this.wordSize; i+=this.wordSize) {
+            result[i/this.wordSize][0] = "0x"+Integer.toHexString(i);
+            result[i/this.wordSize][1] = "0000000";
         }
         return result;
     }
@@ -105,4 +104,6 @@ public class Memory
     public int getMemSize(){
         return memSize;
     }
+    
+
 }

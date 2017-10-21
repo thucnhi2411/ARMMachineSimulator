@@ -18,6 +18,7 @@ public class Operation
     int prev = 0;
     int[] lastPos = new int[2];
     int returnTime = 0;
+    int k = 0;
     /**
      * Constructor for objects of class Operation
      */
@@ -27,7 +28,6 @@ public class Operation
         initOp(list1,list2,map1,map2);
         mem = m;
         initFlag();
-        process();
     }
 
     public void initOp(ArrayList<Instruction> list1, ArrayList<Register>list2,
@@ -38,78 +38,78 @@ public class Operation
         reverseAddrMap = map2;
     }
 
-    public void process(){
+    public void process(Flag flag){
+        if (flag.getStatus() == "HALT") return;
         Register pc = regList.get(9);
         pc.setData(0);
-        outerloop:
-        for (int k = 0; k < mem.getMemSize(); k+=8){
-            Instruction i = reverseAddrMap.get(k);
-            System.out.println(i.p1);
-            Integer x = addressMap.get(i);
-            switch (i.p1){
-                case "MOV":
-                    processMOV(i);
-                    break;
-                case "STP":
-                    processSTP(i);
-                    break;
-                case "STUR":
-                    processD(i);
-                    break;
-                case "STURH":
-                    processD(i);
-                    break;
-                case "STURW":
-                    processD(i);
-                    break;     
-                case "STURB":
-                    processD(i);
-                    break;                    
-                case "LDUR":
-                    processD(i);
-                    break;
-                case "LDURH":
-                    processD(i);
-                    break;
-                case "LDURSW":
-                    processD(i);
-                    break;
-                case "LDURB":
-                    processD(i);
-                    break;
-                case "BL":
-                    k = processBL(i, pc);
-                    break;
-                case "LDP":
-                    processLDP(i);
-                    break;
-                case "HALT":
-                    break outerloop;
-                case "ADD":
-                    processADD(i);
-                    break;
-                case "ADDI":
-                    processADD(i);
-                    break;
-                case "SUB":
-                    processSUB(i);
-                    break;
-                case "AND":
-                    processAND(i);
-                    break;
-                case "CBZ":
-                    int x1 = Integer.parseInt(i.p2.substring(1,i.p2.length()));
-                    Register r = regList.get(x1);
-                    int number1 = Integer.parseInt(r.value, 2);
-                    System.out.println(number1);
-                    if (number1 == 0) k = processCBZ(i, pc);
-                    break;
-                case "RET":
-                    k = processRET(i, pc);
-                    break;
-            }
 
+        Instruction i = reverseAddrMap.get(k);
+        switch (i.p1){
+            case "MOV":
+                processMOV(i);
+                break;
+            case "STP":
+                processSTP(i);
+                break;
+            case "STUR":
+                processD(i);
+                break;
+            case "STURH":
+                processD(i);
+                break;
+            case "STURW":
+                processD(i);
+                break;     
+            case "STURB":
+                processD(i);
+                break;                    
+            case "LDUR":
+                processD(i);
+                break;
+            case "LDURH":
+                processD(i);
+                break;
+            case "LDURSW":
+                processD(i);
+                break;
+            case "LDURB":
+                processD(i);
+                break;
+            case "BL":
+                k = processBL(i, pc);
+                break;
+            case "LDP":
+                processLDP(i);
+                break;
+            case "HALT":
+                flag.setStatus("HALT");
+                return;
+            case "ADD":
+                processADD(i);
+                break;
+            case "ADDI":
+                processADD(i);
+                break;
+            case "SUB":
+                processSUB(i);
+                break;
+            case "AND":
+                processAND(i);
+                break;
+            case "CBZ":
+                int x1 = Integer.parseInt(i.p2.substring(1,i.p2.length()));
+                Register r = regList.get(x1);
+                int number1 = Integer.parseInt(r.value, 2);
+                System.out.println(number1);
+                if (number1 == 0) k = processCBZ(i, pc);
+                break;
+            case "RET":
+                k = processRET(i, pc);
+                break;
         }
+
+        k += 8;
+        pc.setData(k);
     }
 
     //MOV, FMOV
@@ -173,7 +173,7 @@ public class Operation
             flagArr[2].setC(true);
         }
     }
-    
+
     //SUB
     public void processSUB(Instruction i){
         int x1 = Integer.parseInt(i.p3.substring(1,i.p3.length()));
@@ -217,7 +217,7 @@ public class Operation
         }
         return pc.data;
     }
-    
+
     //CBNZ
     public int processCBZ(Instruction i, Register pc){
         for (int k = 0; k<instrList.size(); k++){

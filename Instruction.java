@@ -16,6 +16,7 @@ public class Instruction
     String p3 = null;
     String p4 = null;
     String func = null;
+    String name = null;
     byte[] byteArr = new byte[8];
     Byte b = 0;
 
@@ -72,6 +73,11 @@ public class Instruction
 
     }
 
+    public void setName(String s){
+        s = s.substring(1,s.length()-2);
+        name = s;
+    }
+    
     public byte[] getByteArr(){
         return byteArr;
     }
