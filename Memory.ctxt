@@ -1,0 +1,21 @@
+#BlueJ class context
+comment0.target=Memory
+comment0.text=\n\ The\ Memory\ (byte-addressed\ memory\ simulation),\ holds\ code\ and\ data\ in\ a\ linear\ data\ structure\n\ \n\ @author\ Thuc\ Nhi\ Le\n
+comment1.params=memSize\ wordSize
+comment1.target=Memory(int,\ int)
+comment1.text=\n\ Constructor,\ makes\ a\ new\ Main\ memory\ of\ size\ memSize\ that\ reads\ and\ writes\n\ in\ batches\ of\ size\ wordSize\n
+comment2.params=
+comment2.target=byte[]\ getMem()
+comment3.params=addr
+comment3.target=byte\ getByte(int)
+comment3.text=\n\ Access\ memory\ data\ through\ address\n\ \n\ @param\ \ addr\ the\ address\ of\ the\ bytes\ accessed\n\ @return\ \ data\ at\ address\ specified\n
+comment4.params=addr\ data
+comment4.target=void\ setByte(int,\ byte)
+comment4.text=\n\ Write\ to\ memory\ at\ address\n\ \n\ @param\ \ addr\ the\ address\ of\ the\ bytes\ to\ write\ to\n\ @param\ \ data\ the\ data\ to\ write\n
+comment5.params=data
+comment5.target=java.lang.String\ byteToHex(byte[])
+comment5.text=\n\ Method\ byteToHex,\ converts\ a\ byte\ array\ (usually\ word\ sized)\ to\ its\n\ hex\ representation\ (as\ a\ string)\n\n\ @param\ data\ word-sized\ byte\ array\n\ @return\ hex\ representation\ of\ the\ bytes\n
+comment6.params=
+comment6.target=java.lang.String[][]\ getContentHex()
+comment6.text=\n\ Method\ getContentHex\ returns\ the\ addresses\ and\ contents\ of\ the\ memory\n\ as\ an\ array\ of\ hex\ formatted\ string\ (for\ display\ in\ the\ GUI\n\n\ @return\ hex\ representation\ of\ the\ memory\ content\n
+numComments=7
