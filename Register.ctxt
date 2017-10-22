@@ -1,17 +1,22 @@
 #BlueJ class context
 comment0.target=Register
-comment0.text=\n\ Abstract\ class\ Register\ -\ write\ a\ description\ of\ the\ class\ here\n\ \n\ @author\ Thuc\ Nhi\ Le\n
+comment0.text=\n\ Register\ class\ represents\ both\ general\ and\ special\ registers\n\ \n\ @author\ Thuc\ Nhi\ Le\n
 comment1.params=wordSize\ id\ val
 comment1.target=Register(int,\ int,\ java.lang.String)
-comment1.text=\n\ An\ example\ of\ a\ method\ -\ replace\ this\ comment\ with\ your\ own\n\ \n\ @param\ \ y\ \ \ \ a\ sample\ parameter\ for\ a\ method\n\ @return\ \ \ \ \ \ \ \ the\ sum\ of\ x\ and\ y\ \n
+comment1.text=\n\ Constructor\ of\ the\ register\ class\n\ \n\ @param\ \ \ wordSize\ \ \ \ size\ of\ each\ register\n\ @param\ \ \ id\ \ \ \ \ \ \ \ \ \ id\ for\ general\ register\n\ @param\ \ \ val\ \ \ \ \ \ \ \ \ value\ of\ each\ register\n
 comment2.params=x
 comment2.target=void\ setData(java.lang.Integer)
+comment2.text=\n\ Set\ the\ decimal\ value\ for\ special\ register\ (sp,\ fp,\ pc,\ ir)\n\ \n\ @param\ \ \ x\ \ \ the\ value\n
 comment3.params=val
 comment3.target=void\ setVal(java.lang.String)
+comment3.text=\n\ Set\ value\ for\ register\n\ \n\ @param\ \ \ val\ \ \ \ \ the\ value\n
 comment4.params=strNum
 comment4.target=boolean\ isNum(java.lang.String)
+comment4.text=\n\ Check\ whether\ the\ string\ can\ be\ converted\ into\ Integer\n\ \n\ @param\ \ \ strNum\ \ the\ string\ to\ check\n\ @return\ \ \ \ \ \ \ \ \ \ whether\ the\ string\ can\ be\ converted\ into\ Integer\n
 comment5.params=s
 comment5.target=java.lang.String\ DecToBin(java.lang.String)
+comment5.text=\n\ Convert\ from\ decimal\ to\ binary\n\ \n\ @param\ \ \ s\ \ \ String\ that\ can\ be\ converted\ into\ decimal\n\ @return\ \ \ \ \ \ the\ binary\ string\n
 comment6.params=s
 comment6.target=java.lang.String\ binToHex(java.lang.String)
+comment6.text=\n\ Convert\ from\ binary\ to\ hex\n\ \n\ @param\ \ \ s\ \ \ binary\ string\n\ @return\ \ \ \ \ \ hex\ string\n
 numComments=7

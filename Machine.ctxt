@@ -1,14 +1,24 @@
 #BlueJ class context
 comment0.target=Machine
-comment0.text=\n\ Write\ a\ description\ of\ class\ Machine\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment0.text=\n\ Machine\ class\ runs\ the\ simulation\n\n\ @author\ Thuc\ Nhi\ Le\n
 comment1.params=file
 comment1.target=Machine(java.lang.String)
+comment1.text=\n\ Constructor\ of\ the\ machine,\ initializes\ and\ runs\ the\ program\n\ \n\ @param\ \ \ file\ \ \ \ file\ name\ to\ parse\ into\ Assembler\n
 comment2.params=
 comment2.target=void\ run()
+comment2.text=\n\ Get\ one\ step\ in\ the\ operation\ run\n
 comment3.params=
 comment3.target=void\ execute()
+comment3.text=\n\ Get\ the\ operation\ class\ run\n
 comment4.params=
 comment4.target=java.util.ArrayList\ getRegList()
+comment4.text=\n\ Return\ register\ list\ for\ GUI\n\ \n\ @return\ \ register\ list\n
 comment5.params=k
 comment5.target=Instruction\ getInstruction(int)
-numComments=6
+comment6.params=
+comment6.target=void\ setStage()
+comment6.text=\n\ Set\ the\ stage\ status\ \n
+comment7.params=
+comment7.target=int\ getStage()
+comment7.text=\n\ Return\ the\ stage\ \n\ \n\ @return\ \ the\ stage\n
+numComments=8

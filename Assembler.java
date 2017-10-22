@@ -3,30 +3,33 @@ import java.util.*;
 import java.util.regex.*;
 
 /**
- * Assembler class, parses file line by line, stores them in
- * a HashMap for later translation to actions in the simulator
+ * Assembler class, parses file line by line, stores them in a HashMap and update the memory
+ * for later translation to actions in the simulator
  * 
  * @author Thuc Nhi Le
  */
 public class Assembler
 {
-    HashMap<String, Byte> opCodeMap;
-    HashMap<Instruction, Integer> addressMap = new HashMap<Instruction, Integer>();
-    HashMap<Integer, Instruction> reverseAddrMap = new HashMap<Integer, Instruction> ();
-    ArrayList<Instruction> instrList = new ArrayList<Instruction>();
-    ArrayList<Register> regList = new ArrayList<Register>();
+    HashMap<String, Byte> opCodeMap; // map from the opcode instruction to byte representation
+    HashMap<Instruction, Integer> addressMap = new HashMap<Instruction, Integer>(); // map from instruction to the address
+    HashMap<Integer, Instruction> reverseAddrMap = new HashMap<Integer, Instruction> (); // map from address to instruction
+    ArrayList<Instruction> instrList = new ArrayList<Instruction>(); //list of instruction
+    ArrayList<Register> regList = new ArrayList<Register>();  //list of register
     int wordsize = 8;
-    Memory memory;
-    int maxmem = (int) Math.pow(2,16);
-    // Memory
+    Memory memory; //memory
+    int maxmem = (int) Math.pow(2,16); //maxmem 
     int regcnt = 0;
     String maxmemS = null;
     int pos = 0;
     Byte[] memArr = new Byte[maxmem];
 
-    // A HashMap containing each parsed instruction and its list of assignments
-    // (stored as a list of left and right operands)
 
+    /**
+     * Constructor the the assembler takes in the instruction set to create the image file
+     * represent the memory
+     * 
+     * @param   filename    the name of input file
+     */
     public Assembler(String filename)
     {
         initOpCodeMap();
@@ -38,6 +41,10 @@ public class Assembler
         parse(filename);
     }
 
+    /**
+     * Initialize the opcode map to map from opcode to byte representation
+     * 
+     */
     public void initOpCodeMap() {
         // Fill Operation Code Table
         opCodeMap = new HashMap<String, Byte>();
@@ -64,6 +71,9 @@ public class Assembler
         opCodeMap.put("BL", (byte)0x51);               
     }
 
+    /**
+     * Initialize the register list
+     */
     public void initRegList(){
         for (int i = 0; i<7; i++){
             Register r = new Register(8,i,null);
@@ -72,17 +82,19 @@ public class Assembler
         Register r2 = new Register(8,7,null); //sp
         Register r3 = new Register(8,8,null); //fp
         Register r4 = new Register(8,16,null); //pc
+        Register r5 = new Register(8,17,null); //ir
         regList.add(r2);
         regList.add(r3);
         regList.add(r4);
+        regList.add(r5);
         r4.setData(0);
+        r5.setData(0);
     }
 
     /**
-     * Method parse reads the RTN File and stores the series of RTN instructions
-     * necessary to accomplish every ISA instruction.
+     * Reads the input file and stores in the maps and lists needed
      *
-     * @param filename The path to the file
+     * @param   filename    the name of the input file
      */
     public void parse(String filename) {
         try {
@@ -179,6 +191,9 @@ public class Assembler
         }
     }
 
+    /**
+     * Create the image file representing the memory 
+     */
     public void printImage(){
         try{
             // create the new file to write the output list
@@ -197,12 +212,10 @@ public class Assembler
             for (int i = 0; i<memArr.length; i++){
                 memory.setByte(i, memArr[i]);
             }
+            memory.buildHexArr();
 
             for (int i = 0; i< maxmem; i++){
-                output.print(memory.getByte(i));
-                if ((i+1) % 8 == 0) output.print("  ");
-                if ((i+1) % 16 == 0) output.println("");
-
+                output.print(memory.hexArr[i]);
             }
             output.close();
         } catch (Exception e) {
@@ -210,18 +223,38 @@ public class Assembler
         }
     }
 
+    /**
+     * Get the instruction list
+     * 
+     * @return  instruction list
+     */
     public ArrayList<Instruction> getInstrList(){
         return instrList;
     }
 
+    /**
+     * Get the register list
+     * 
+     * @return  register list
+     */
     public ArrayList<Register> getRegList(){
         return regList;
     }
 
+    /**
+     * Get the address map
+     * 
+     * @return  address map
+     */
     public HashMap<Instruction, Integer> getAddrMap(){
         return addressMap;
     }
     
+    /**
+     * Get the reverse address map
+     * 
+     * @return  reverse address map
+     */
     public HashMap<Integer, Instruction> getReverseAddrMap(){
         return reverseAddrMap;
     }
@@ -231,21 +264,36 @@ public class Assembler
      * @param   hex     the hex number
      * @return          the dec number
      */
-    private int hexToDec(String hex){
+    protected int hexToDec(String hex){
         String subHex = hex.substring(2,hex.length());
         int h = Integer.parseInt(subHex,16); 
         String bin = Integer.toBinaryString(h);
         return Integer.parseInt(bin,2);
     }
 
+    /**
+     * Get word size
+     * 
+     * @return  wordsize
+     */
     public int getWordsize(){
         return wordsize;
     }
 
+    /**
+     * Get max memory size
+     * 
+     * @return  max memory size
+     */
     public int getMemsize(){
         return maxmem;
     }
 
+    /**
+     * Get the memory created
+     * 
+     * @return  memory object
+     */
     public Memory getMemory(){
         return memory;
     }

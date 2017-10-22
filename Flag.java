@@ -1,15 +1,17 @@
 
 /**
- * Write a description of class Flags here.
+ * Flag class represents the flag and the status in the machine
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Thuc Nhi Le
  */
 public class Flag
 {
-    private boolean n, z, c, v;
+    boolean n, z, c, v;
     private String status;
 
+    /**
+     * The constructor of the flag class 
+     */
     public Flag()
     {
         n = false; //negative
@@ -19,51 +21,61 @@ public class Flag
         status = "AOK";
     }
     
+    /**
+     * Change Negative flag
+     * 
+     * @param   n   boolean value
+     */
     public void setN(boolean n)
     {
         this.n = n;
     }
     
+    /**
+     * Change Zero flag
+     * 
+     * @param   z   boolean value
+     */
     public void setZ(boolean z)
     {
         this.z = z;
     }
     
+    /**
+     * Change Carry on flag
+     * 
+     * @param   c   boolean value
+     */
     public void setC(boolean c)
     {
         this.c = c;
     }
     
+    /**
+     * Change Overflow flag
+     * 
+     * @param   v   boolean value
+     */
     public void setV(boolean v)
     {
         this.v = v;
     }
 
+    /**
+     * Change status flag
+     * 
+     * @param   status   status of the program
+     */
     public void setStatus(String status)
     {
         this.status = status;
     }
     
-    public boolean getN()
-    {
-        return this.n;
-    }
-    
-    public boolean getZ()
-    {
-        return this.z;
-    }
-    
-    public boolean getC()
-    {
-        return this.c;
-    }    
-
-    public boolean getV()
-    {
-        return this.v;
-    }
-    
+    /**
+     * Get the status of the program
+     * 
+     * @return  status of the program
+     */
     public String getStatus()
     {
         return this.status;

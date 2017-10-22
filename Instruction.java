@@ -1,27 +1,28 @@
 import java.util.*;
 import java.lang.*;
 /**
- * Write a description of class Intruction here.
+ * Instructor class represents an instructor and decode the instructor
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Thuc Nhi Le
  */
 public class Instruction
 {
-    HashMap<String, Byte> registerMap;
-    HashMap<String, Byte> functionMap;
-    ArrayList<Register> listReg = new ArrayList<Register>();
-    String p1 = null;
-    String p2 = null;
-    String p3 = null;
-    String p4 = null;
-    String func = null;
-    String name = null;
+    HashMap<String, Byte> registerMap; //map register to byte
+    HashMap<String, Byte> functionMap; //map function to byte
+    ArrayList<Register> listReg = new ArrayList<Register>(); //list of register
+    String p1 = null; //1st position
+    String p2 = null; //2nd position
+    String p3 = null; //3rd position
+    String p4 = null; //4th position
+    String func = null; //the function that the instructor belongs to
+    String name = null; //the string represent the instructor
     byte[] byteArr = new byte[8];
-    Byte b = 0;
+    Byte b = 0; // represent opcode
 
     /**
      * Constructor for objects of class Intruction
+     * 
+     * @param   b   the byte representing opcode of the instruction
      */
     public Instruction(Byte b)
     {
@@ -31,6 +32,11 @@ public class Instruction
         decodeOpcode(b);
     }
 
+    /**
+     * Decode the opcode into byte type
+     * 
+     * @param   b   the byte representing the opcode
+     */
     public void decodeOpcode(Byte b){
         // for HALT, NOP, RET, STP, LDP
         if (b < 4 && b>0){
@@ -48,6 +54,11 @@ public class Instruction
         }
     }
 
+    /**
+     * Decode the register and the immediate
+     * 
+     * @param   arr     the array of string that is parsed in Assembler
+     */
     public void decodeRegister(String[] arr){
         // for MOV, FMOV --> arr[2]:x0, arr[3]:doubleval
         for (int e = 0; e < arr.length; e++) {
@@ -73,15 +84,30 @@ public class Instruction
 
     }
 
+    /**
+     * Set name value
+     * 
+     * @param   s   the string that is parsed from the Assembler
+     */
     public void setName(String s){
         s = s.substring(1,s.length()-2);
         name = s;
     }
     
+    /**
+     * Return the byte array of wordsize
+     * 
+     * @return  the byte array
+     */
     public byte[] getByteArr(){
         return byteArr;
     }
 
+    /**
+     * Decode the stack
+     * 
+     * @param   the array of string that is parsed in Assembler
+     */
     private void decodeStackOp(String[] arr){
         p1 = arr[1];
         mapping(arr[2],2,3);
@@ -92,6 +118,11 @@ public class Instruction
         p4 = arr[4];
     }
     
+    /**
+     * Decode the MOV and FMOV instruction
+     * 
+     * @param   the array of string that is parsed in Assembler
+     */
     private void decodeMOV(String[] arr){
         p1 = arr[1];
         mapping(arr[2],2,3); //arr[2]
@@ -101,7 +132,12 @@ public class Instruction
         mapping(arr[3], 6,7);
         p4 = arr[3];
     }
-
+    
+    /**
+     * Decode the R, D, I type instructions
+     * 
+     * @param   the array of string that is parsed in Assembler
+     */
     private void decodeRDI(String[] arr){
         p1 = arr[1];
         mapping(arr[2],2,3);
@@ -112,6 +148,11 @@ public class Instruction
         p4 = arr[4];
     }
 
+    /**
+     * Decode the CBZ instruction
+     * 
+     * @param   the array of string that is parsed in Assembler
+     */
     private void decodeCBZ(String[] arr){
         p1 = arr[1];
         mapping(arr[2],2,3);
@@ -122,6 +163,11 @@ public class Instruction
         p4 = arr[3];
     }
 
+    /**
+     * Decode the BL instruction
+     * 
+     * @param   the array of string that is parsed in Assembler
+     */
     private void decodeBL(String[] arr){
         p1 = arr[1];
         byteArr[2] = 0;
@@ -132,6 +178,13 @@ public class Instruction
         p4 = arr[2];
     }
 
+    /**
+     * Map the register to the byte represent it in the memory
+     * 
+     * @param   s   the register
+     * @param   first   the first position
+     * @param   second  the second position
+     */
     private void mapping(String s, int first, int second){
         Byte rb = 0;
         if (isNum(s)){
@@ -164,6 +217,9 @@ public class Instruction
 
     }
 
+    /**
+     * Create the map to map the register to the byte representation
+     */
     public void initRegisterMap() {
         // Fill Operation Code Table
         registerMap = new HashMap<String, Byte>();
@@ -180,6 +236,9 @@ public class Instruction
         registerMap.put("Stack", (byte)0x60);
     }
 
+    /**
+     * Create the map to map the function to the byte representation
+     */
     public void initFunctionMap() {
         // Fill Operation Code Table
         functionMap = new HashMap<String, Byte>();
@@ -188,7 +247,13 @@ public class Instruction
         functionMap.put("calByte", (byte)0x02);
     }
 
-    private boolean isNum(String strNum) {
+    /**
+     * Check if the string is a number for the parsing process
+     * 
+     * @param   strNum  the string to check
+     * @return          whether the string can be parsed into integer 
+     */
+    protected boolean isNum(String strNum) {
         boolean ret = true;
         try {
             Integer.parseInt(strNum);
@@ -198,10 +263,20 @@ public class Instruction
         return ret;
     }
     
+    /**
+     * Set the func value
+     * 
+     * @param   s   the string to set
+     */
     public void setFunction(String s){
         func = s;
     }
 
+    /**
+     * Return the register list
+     * 
+     * @return  the register list
+     */
     public ArrayList<Register> getListReg(){
         return listReg;
     }

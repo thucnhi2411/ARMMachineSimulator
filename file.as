@@ -38,10 +38,10 @@ calculate:
 	RET 						;
 calByte: 
 	STP fp, [sp, -16]! 			;
-	MOV x6, 65					; 
+	MOV x6, 7					; 
 	STURB x6, [fp, 15]			;
 	LDURB x6, [fp, 15]			;
-	ADDI x6, x6, 1				;
+	ADDI x6, x6, 10				;
 	STURB x6, [fp, 15]			;
 	LDP fp, [sp], 16			;
 	RET 						;
